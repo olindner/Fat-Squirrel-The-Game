@@ -17,5 +17,6 @@ public class DogLoss : MonoBehaviour {
 	public void LoadMenu ()
 	{
 		Application.LoadLevel("Menu");
+
 	}
 }
