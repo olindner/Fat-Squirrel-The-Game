@@ -1,77 +1,97 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
+using System.Linq;
 
 public class Instructions : MonoBehaviour {
 
-	public Image Instr0Box;
-	public Text Instr0Text;
+	public GameObject Instr0Box;
+	public GameObject Instr0Text;
 	private bool Instr0 = false;
 
-	public Image Instr1Box;
-	public Text Instr1Text;
-	public Image Instr1Arrow;
+	public GameObject Instr1Box;
+	public GameObject Instr1Text;
+	public GameObject Instr1Arrow;
 	private bool Instr1 = false;
 
-	public Image Instr2Box;
-	public Text Instr2Text;
-	public Image Instr2Arrow;
+	public GameObject Instr2Box;
+	public GameObject Instr2Text;
+	public GameObject Instr2Arrow;
 	private bool Instr2 = false;
 
-	public Image Instr3Box;
-	public Text Instr3Text;
-	public Image Instr3Arrow;
-	public Image Instr3Student;
-	public Image Instr3Dog;
+	public GameObject Instr3Box;
+	public GameObject Instr3Text;
+	public GameObject Instr3Arrow;
+	public GameObject Instr3Student;
+	public GameObject Instr3Dog;
 	private bool Instr3 = false;
 
-	public Image Instr4Box;
-	public Text Instr4Text;
-	public Image Instr4Arrow;
+	public GameObject Instr4Box;
+	public GameObject Instr4Text;
+	public GameObject Instr4Arrow;
 	private bool Instr4 = false;
 
-	public Text ArrowInstrText;
-	public Text ShiftInstrText;
-	public Text ControlInstrText;
+	public GameObject ArrowInstrText;
+	public GameObject ShiftInstrText;
+	public GameObject ControlInstrText;
 
-	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
+		var objectsToInit = new List<GameObject> 
+		{
+			Instr1Box, Instr1Text, Instr1Arrow,
+			Instr2Box, Instr2Text, Instr2Arrow,
+			Instr3Box, Instr3Text, Instr3Arrow, Instr3Student, Instr3Dog,
+			Instr4Box, Instr4Text, Instr4Arrow,
+			ArrowInstrText, ShiftInstrText, ControlInstrText,
+		};
+		Init(objectsToInit);
 		Time.timeScale = 0;
-		Instr0Box.enabled = Instr0Text.enabled = true;
-		Instr1Box.enabled = Instr1Text.enabled = Instr1Arrow.enabled = Instr2Box.enabled = Instr2Text.enabled = Instr2Arrow.enabled =
-			Instr3Box.enabled = Instr3Text.enabled = Instr3Arrow.enabled = Instr3Student.enabled = Instr3Dog.enabled = 
-				Instr4Box.enabled = Instr4Text.enabled = Instr4Arrow.enabled = ArrowInstrText.enabled = ShiftInstrText.enabled = ControlInstrText.enabled = false;
 	}
 	
-	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.GetKeyDown (KeyCode.Space) && Instr0 == false) {
-			Instr0Box.enabled = Instr0Text.enabled = false;
-			Instr0 = true;
-			Instr1Box.enabled = Instr1Text.enabled = Instr1Arrow.enabled = true;
+		if (Input.GetKeyDown (KeyCode.Space) && Instr0 == false)
+		{
+			Helper.SetAllTF(new List<GameObject> {Instr0Box, Instr0Text}, false);
+			Helper.SetAllTF(new List<GameObject> {Instr1Box, Instr1Text, Instr1Arrow}, true);
+			Instr0 = false;
 		}
-		else if (Input.GetKeyDown (KeyCode.Space) && Instr1 == false) {
-			Instr1Box.enabled = Instr1Text.enabled = Instr1Arrow.enabled = false;
+		else if (Input.GetKeyDown (KeyCode.Space) && Instr1 == false)
+		{
+			Helper.SetAllTF(new List<GameObject> {Instr1Box, Instr1Text, Instr1Arrow}, false);
+			Helper.SetAllTF(new List<GameObject> {Instr2Box, Instr2Text, Instr2Arrow}, true);
 			Instr1 = true;
-			Instr2Box.enabled = Instr2Text.enabled = Instr2Arrow.enabled = true;
 		}
-		else if (Input.GetKeyDown (KeyCode.Space) && Instr2 == false) {
-			Instr2Box.enabled = Instr2Text.enabled = Instr2Arrow.enabled = false;
+		else if (Input.GetKeyDown (KeyCode.Space) && Instr2 == false)
+		{
+			Helper.SetAllTF(new List<GameObject> {Instr2Box, Instr2Text, Instr2Arrow}, false);
+			Helper.SetAllTF(new List<GameObject> {Instr3Box, Instr3Text, Instr3Arrow, Instr3Student, Instr3Dog}, true);
 			Instr2 = true;
-			Instr3Box.enabled = Instr3Text.enabled = Instr3Arrow.enabled = Instr3Student.enabled = Instr3Dog.enabled = true;
 		}
-		else if (Input.GetKeyDown (KeyCode.Space) && Instr3 == false) {
-			Instr3Box.enabled = Instr3Text.enabled = Instr3Arrow.enabled = Instr3Student.enabled = Instr3Dog.enabled = false;
+		else if (Input.GetKeyDown (KeyCode.Space) && Instr3 == false)
+		{
+			Helper.SetAllTF(new List<GameObject> {Instr3Box, Instr3Text, Instr3Arrow, Instr3Student, Instr3Dog}, false);
+			Helper.SetAllTF(new List<GameObject> {Instr4Box, Instr4Text, Instr4Arrow}, true);
 			Instr3 = true;
-			Instr4Box.enabled = Instr4Text.enabled = Instr4Arrow.enabled = true;
 		}
-		else if (Input.GetKeyDown (KeyCode.Space) && Instr4 == false) {
-			Instr4Box.enabled = Instr4Text.enabled = Instr4Arrow.enabled = false;
+		else if (Input.GetKeyDown (KeyCode.Space) && Instr4 == false)
+		{
+			Helper.SetAllTF(new List<GameObject> {Instr4Box, Instr4Text, Instr4Arrow}, false);
+			Helper.SetAllTF(new List<GameObject> {ArrowInstrText, ShiftInstrText, ControlInstrText}, true);
 			Instr4 = true;
-			ArrowInstrText.enabled = ShiftInstrText.enabled = ControlInstrText.enabled = true;
 			Time.timeScale = 1;
+		}
+	}
+
+	void Init(List<GameObject> objs)
+	{
+		Instr0Box.SetActive(true);
+		Instr0Text.SetActive(true);
+
+		foreach (var obj in objs)
+		{
+			obj.SetActive(false);
 		}
 	}
 }

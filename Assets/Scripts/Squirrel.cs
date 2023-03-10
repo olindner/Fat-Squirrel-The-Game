@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class Squirrel : MonoBehaviour {
 
@@ -10,29 +11,26 @@ public class Squirrel : MonoBehaviour {
 	public float maxSpeed = 15f;
 	public float boost = 5f;
 	public float gameTimer = 300f;
-//	public float jump;
-//	public float jumpDelay;
-	//private float jumpTimer = 0f;
 	public int tummy = 0;
 	public bool inTree = false;
 	private Quaternion saveAngle;
 
-	public Image bit0;
-	public Image bit1;
-	public Image bit2;
-	public Image bit3;
-	public Image red;
-	public Image health1;
-	public Image health2;
-	public Image health3;
+	public GameObject bit0;
+	public GameObject bit1;
+	public GameObject bit2;
+	public GameObject bit3;
+	public GameObject red;
+	public GameObject health1;
+	public GameObject health2;
+	public GameObject health3;
 	private float hurtTimer = 0f;
 	public AudioSource player;
 	public AudioClip eat;
 	public AudioClip burp;
 	public AudioClip hurt;
 	public AudioClip ding;
-	public Text SpaceToExitText;
-	public Text WarnText;
+	public GameObject SpaceToExitText;
+	public GameObject WarnText;
 
 	public GameObject[] food;
 	private int filled = 0;
@@ -40,42 +38,43 @@ public class Squirrel : MonoBehaviour {
 	private int health = 3;
 	public static Squirrel instance;
 	
-	// Use this for initialization
 	void Start ()
 	{
-		bit0.enabled = bit1.enabled = bit2.enabled = bit3.enabled = false;
-		health1.enabled = health2.enabled = health3.enabled = true;
-		SpaceToExitText.enabled = false;
+		bit0.SetActive(false);
+		bit1.SetActive(false);
+		bit2.SetActive(false);
+		bit3.SetActive(false);
+		SpaceToExitText.SetActive(false);
+		red.SetActive(false);
+		WarnText.SetActive(false);
+		
+		health1.SetActive(true);
+		health2.SetActive(true);
+		health3.SetActive(true);
 		instance = this;
-		red.enabled = false;
-		WarnText.enabled = false;
 
 		foreach (GameObject g in food) {
 			g.SetActive(false);
 		}
 	}
 	
-	// Update is called once per frame
 	void Update ()
 	{
 
 		gameTimer -= Time.deltaTime;
 		if (gameTimer < 60f) {
-			WarnText.enabled = true;
+			WarnText.SetActive(true);
 		}
 		if (gameTimer < 50f)
-			WarnText.enabled = false;
+			WarnText.SetActive(false);
 		if (gameTimer <= 0f)
-			Application.LoadLevel ("DeathFreeze");
+			SceneManager.LoadScene("DeathFreeze");
 
 		if (hurtTimer > 0f) {
-//			Color temp = Color.red;
-//			temp.a = 80f;
-//			red.material.color = temp;
-			red.enabled = true;
+			red.SetActive(true);
 			hurtTimer -= Time.time;
 		} else
-			red.enabled = false;
+			red.SetActive(false);
 
 		if (!inTree) {
 			if (Input.GetKey (KeyCode.LeftArrow)) {
@@ -88,9 +87,6 @@ public class Squirrel : MonoBehaviour {
 				GetComponent<Rigidbody> ().AddForce (transform.forward * speed);
 				if (GetComponent<Rigidbody> ().velocity.magnitude > maxSpeed)
 					GetComponent<Rigidbody> ().velocity = GetComponent<Rigidbody> ().velocity.normalized * maxSpeed;
-//				if (Time.time >= jumpTimer) {
-//					Jump ();
-//				}
 			}
 			if (Input.GetKey (KeyCode.DownArrow)) {
 				GetComponent<Rigidbody> ().AddForce (-transform.forward * speed);
@@ -110,7 +106,7 @@ public class Squirrel : MonoBehaviour {
 		} else { //is in tree
 			if (Input.GetKey (KeyCode.Space)) { //press Space to exit tree
 				inTree = false;
-				SpaceToExitText.enabled = false;
+				SpaceToExitText.SetActive(false);
 				transform.position = new Vector3(transform.position.x, transform.position.y - 10f, transform.position.z); //move back down to floor
 				GetComponent<Rigidbody>().useGravity = true; //enable gravity
 				transform.rotation = saveAngle; //reset original camera angle
@@ -132,7 +128,7 @@ public class Squirrel : MonoBehaviour {
 	{
 		if (coll.gameObject.name == "Trunk") { //next to a tree
 			inTree = true;
-			SpaceToExitText.enabled = true;
+			SpaceToExitText.SetActive(true);
 			saveAngle = transform.rotation; //save camera angle
 			GetComponent<Rigidbody> ().useGravity = false; //disable gravity
 			float randx = Random.Range (5f, 10f);
@@ -162,12 +158,12 @@ public class Squirrel : MonoBehaviour {
 			player.Play ();
 			hurtTimer = 400f;
 			if (health == 2)
-				health3.enabled = false;
+				health3.SetActive(false);
 			if (health == 1)
-				health2.enabled = false;
+				health2.SetActive(false);
 			if (health == 0) {
-				health1.enabled = false;
-				Application.LoadLevel("DeathByDog");
+				health1.SetActive(false);
+				SceneManager.LoadScene("DeathByDog");
 			}
 
 		}
@@ -176,12 +172,15 @@ public class Squirrel : MonoBehaviour {
 			player.Play();
 			for (int i = filled; i < filled + tummy; ++i) {
 				food[i].SetActive(true);
-				if (i == 9) Application.LoadLevel("Win");
+				if (i == 9) SceneManager.LoadScene("Win");
 			}
 			filled += tummy;
 			tummy = 0;
 			GetComponent<Rigidbody>().drag = 0;
-			bit0.enabled = bit1.enabled = bit2.enabled = bit3.enabled = false;
+			bit0.SetActive(false);
+			bit1.SetActive(false);
+			bit2.SetActive(false);
+			bit3.SetActive(false);
 		}
 	}
 
@@ -194,13 +193,13 @@ public class Squirrel : MonoBehaviour {
 //		player.Play ();
 		if (tummy <= 3) tummy++;
 		if (tummy == 1) {
-			bit0.enabled = true;
+			bit0.SetActive(true);
 		} else if (tummy == 2) {
-			bit1.enabled = true;
+			bit1.SetActive(true);
 		} else if (tummy == 3) {
-			bit2.enabled = true;
+			bit2.SetActive(true);
 		} else if (tummy == 4) {
-			bit3.enabled = true;
+			bit3.SetActive(true);
 		}
 		GetComponent<Rigidbody>().drag++;
 	}
@@ -210,13 +209,13 @@ public class Squirrel : MonoBehaviour {
 		player.Play();
 		tummy--;
 		if (tummy == 0) {
-			bit0.enabled = false;
+			bit0.SetActive(false);
 		} else if (tummy == 1) {
-			bit1.enabled = false;
+			bit1.SetActive(false);
 		} else if (tummy == 2) {
-			bit2.enabled = false;
+			bit2.SetActive(false);
 		} else if (tummy == 3) {
-			bit3.enabled = false;
+			bit3.SetActive(false);
 		}
 		//GetComponent<Rigidbody> ().AddForce (transform.forward * boost);
 		GetComponent<Rigidbody>().drag--;

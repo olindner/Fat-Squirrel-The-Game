@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DogLoss : MonoBehaviour {
 
@@ -16,7 +17,6 @@ public class DogLoss : MonoBehaviour {
 
 	public void LoadMenu ()
 	{
-		Application.LoadLevel("Menu");
-
+		SceneManager.LoadScene("Menu");
 	}
 }
